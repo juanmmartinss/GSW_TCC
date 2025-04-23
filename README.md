@@ -1,11 +1,11 @@
 # GSW_TCC
 
-API Back/Front para Ground Station Software do projeto CanSat, utilizando FastAPI + PostgreSQL.
+API Back/Front for the Ground Station Software of the CanSat project, using FastAPI + PostgreSQL.
 
-Rodar localmente com Docker:
+Run locally with Docker:
 
 ```bash
 docker-compose up --build
 ```
 
-Acesse: http://localhost:8000/
+Access: http://localhost:8000/
