@@ -2,18 +2,37 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface Simples</title>
+    <title>Painel de Monitoramento</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Dados da API</h1>
-        <div id="data-container">
-            <p>Carregando dados...</p>
+    <div class="header">
+        <button id="btnComandos">Comandos</button>
+        <button id="btnTelemetrias">Telemetrias</button>
+    </div>
+
+    <div class="content">
+        <div id="comandosSection" class="section hidden">
+            <h2>Enviar Comando</h2>
+            <select id="commandDropdown">
+                <option value="CMD_START_MISSION">Iniciar Missão</option>
+                <option value="CMD_STOP_MISSION">Encerrar Missão</option>
+                <option value="CMD_REBOOT">Reiniciar Sistema</option>
+                <option value="CMD_DEPLOY_PAYLOAD">Ativar Payload</option>
+            </select>
+            <button onclick="enviarComando()">Enviar</button>
+            <p id="respostaComando"></p>
+        </div>
+
+        <div id="telemetriasSection" class="section">
+            <h2>Telemetrias em Tempo Real</h2>
+            <div id="telemetry-container">
+                <p>Carregando dados...</p>
+            </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
