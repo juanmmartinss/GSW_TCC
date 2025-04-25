@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Painel de Monitoramento</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="header">
@@ -24,15 +25,41 @@
             <p id="respostaComando"></p>
         </div>
 
-        <div id="telemetriasSection" class="section">
-            <h2>Telemetrias em Tempo Real</h2>
-            <div id="telemetry-container">
-                <p>Carregando dados...</p>
+        <div class="visual-area">
+            <h2>Visualização de Dados</h2>
+            <div class="charts-container">
+                <div class="chart-box">
+                    <canvas id="graficoAltura"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="graficoTemperatura"></canvas>
+                </div>
             </div>
+
+            <div class="indicators-container">
+                <div class="indicator">
+                    <h3>Pressão</h3>
+                    <div id="pressaoBar" class="bar"></div>
+                    <span id="pressaoValor"></span>
+                </div>
+                <div class="indicator">
+                    <h3>Bateria</h3>
+                    <canvas id="graficoBateria" width="150" height="150"></canvas>
+                    <span id="bateriaValor"></span>
+                </div>
+                <div class="indicator">
+                    <h3>Localização</h3>
+                    <div id="coordText" style="color: #777; font-size: 14px;">Lat: ---, Long: ---</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="telemetry-area">
+            <h2>Telemetrias em Tempo Real</h2>
+            <div id="telemetry-container"><p>Carregando dados...</p></div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-

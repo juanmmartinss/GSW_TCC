@@ -33,17 +33,53 @@ body {
 
 .section {
     padding: 20px;
-    flex-grow: 1;
-    overflow-y: auto;
     display: none;
-}
-
-.section h2 {
-    margin-top: 0;
 }
 
 .hidden {
     display: none;
+}
+
+.visual-area {
+    flex: 2;
+    padding: 20px;
+}
+
+.telemetry-area {
+    flex: 1;
+    padding: 20px;
+    background: #e9e9e9;
+    overflow-y: auto;
+}
+
+.charts-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.chart-box {
+    width: 40%;
+}
+
+.indicators-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.indicator {
+    text-align: center;
+    flex: 1;
+    padding: 10px;
+}
+
+.bar {
+    height: 20px;
+    background: linear-gradient(to right, #4caf50, #81c784);
+    margin: 5px auto;
+    width: 80%;
+    border-radius: 5px;
 }
 
 #telemetry-container ul {
@@ -56,4 +92,10 @@ body {
     margin: 10px 0;
     padding: 10px;
     border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+canvas {
+    max-width: 100%;
 }
