@@ -1,96 +1,81 @@
-let chartAltura, chartTemperatura;
-
 // Alternância entre seções
 document.getElementById("btnComandos").addEventListener("click", () => {
-    document.querySelector(".visual-area").style.display = "none";
-    document.querySelector(".telemetry-area").style.display = "block";
+    document.getElementById("comandosSection").classList.remove("hidden");
+    document.getElementById("telemetriasSection").classList.add("hidden");
 });
 
 document.getElementById("btnTelemetrias").addEventListener("click", () => {
-    document.querySelector(".visual-area").style.display = "block";
-    document.querySelector(".telemetry-area").style.display = "block";
+    document.getElementById("telemetriasSection").classList.remove("hidden");
+    document.getElementById("comandosSection").classList.add("hidden");
 });
 
-// Inicializar gráficos
-function initCharts() {
-    const ctxAltura = document.getElementById('graficoAltura').getContext('2d');
-    const ctxTemperatura = document.getElementById('graficoTemperatura').getContext('2d');
+// Simular envio de comando
+function enviarComando() {
+    const comando = document.getElementById("commandDropdown").value;
+    const resposta = document.getElementById("respostaComando");
+    resposta.textContent = `Comando '${comando}' enviado com sucesso!`;
+}
 
-    chartAltura = new Chart(ctxAltura, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Altura (m)',
-                data: [],
-                borderColor: 'blue',
-                backgroundColor: 'transparent'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
+// Configuração dos gráficos
+let altitudeChart = new Chart(document.getElementById("altitudeChart"), {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Altitude (m)",
+            data: [],
+            backgroundColor: "rgba(33, 150, 243, 0.2)",
+            borderColor: "rgba(33, 150, 243, 1)",
+            fill: true
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: { y: { beginAtZero: true }, x: { display: false } }
+    }
+});
+
+let temperatureChart = new Chart(document.getElementById("temperatureChart"), {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Temperatura (°C)",
+            data: [],
+            backgroundColor: "rgba(244, 67, 54, 0.2)",
+            borderColor: "rgba(244, 67, 54, 1)",
+            fill: true
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: { y: { beginAtZero: true }, x: { display: false } }
+    }
+});
+
+let batteryChart = new Chart(document.getElementById("batteryChart"), {
+    type: "bar",
+    data: {
+        labels: ["Bateria"],
+        datasets: [{
+            label: "Nível de Bateria (%)",
+            data: [100],
+            backgroundColor: ["rgba(76, 175, 80, 0.6)"]
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true, max: 100 }
         }
-    });
+    }
+});
 
-    chartTemperatura = new Chart(ctxTemperatura, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Temperatura (°C)',
-                data: [],
-                borderColor: 'red',
-                backgroundColor: 'transparent'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-}
-
-// Atualiza tudo visual
-function atualizarGraficos(data) {
-    const latest = data[data.length - 1];
-
-    const timestamps = data.map(t => new Date(t.timestamp).toLocaleTimeString());
-    const alturas = data.map(t => t.altitude);
-    const temperaturas = data.map(t => t.temperature);
-
-    chartAltura.data.labels = timestamps;
-    chartAltura.data.datasets[0].data = alturas;
-    chartAltura.update();
-
-    chartTemperatura.data.labels = timestamps;
-    chartTemperatura.data.datasets[0].data = temperaturas;
-    chartTemperatura.update();
-
-    atualizarIndicadores(latest);
-}
-
-// Atualizar pressão, bateria e coordenadas
-function atualizarIndicadores(dado) {
-    // Pressão
-    const pressao = dado.pressure;
-    const pressaoPercent = Math.min(100, (pressao / 1050) * 100);
-    document.getElementById("pressaoBar").style.width = `${pressaoPercent}%`;
-    document.getElementById("pressaoValor").innerText = `${pressao} hPa`;
-
-    // Bateria
-    const bateria = dado.battery;
-    const bateriaPercent = Math.min(100, bateria);
-    document.getElementById("bateriaBar").style.width = `${bateriaPercent}%`;
-    document.getElementById("bateriaValor").innerText = `${bateria}%`;
-
-    // Coordenadas
-    const coords = `Lat: ${dado.latitude.toFixed(4)}, Long: ${dado.longitude.toFixed(4)}`;
-    document.getElementById("coordText").innerText = coords;
-}
-
-// Buscar dados
-const fetchTelemetries = async () => {
+// Busca e atualiza telemetrias
+async function fetchTelemetries() {
     try {
         const res = await fetch('/telemetries');
         const data = await res.json();
@@ -105,21 +90,40 @@ const fetchTelemetries = async () => {
         data.forEach(t => {
             html += `<li>
                 <strong>${t.timestamp}</strong><br>
-                Alt: ${t.altitude}m | Temp: ${t.temperature}°C | Press: ${t.pressure} hPa<br>
-                Lat: ${t.latitude}, Long: ${t.longitude} | Bat: ${t.battery}%
+                <b>Alt:</b> ${t.altitude}m | <b>Temp:</b> ${t.temperature}°C | <b>Press:</b> ${t.pressure} hPa<br>
+                <b>Lat:</b> ${t.latitude}, <b>Long:</b> ${t.longitude} | <b>Bat:</b> ${t.battery}%
             </li>`;
+
+            // Atualiza os gráficos
+            const label = new Date(t.timestamp).toLocaleTimeString();
+
+            if (altitudeChart.data.labels.length >= 10) {
+                altitudeChart.data.labels.shift();
+                temperatureChart.data.labels.shift();
+                altitudeChart.data.datasets[0].data.shift();
+                temperatureChart.data.datasets[0].data.shift();
+            }
+
+            altitudeChart.data.labels.push(label);
+            temperatureChart.data.labels.push(label);
+            altitudeChart.data.datasets[0].data.push(t.altitude);
+            temperatureChart.data.datasets[0].data.push(t.temperature);
+            batteryChart.data.datasets[0].data = [t.battery];
         });
         html += "</ul>";
         container.innerHTML = html;
 
-        atualizarGraficos(data);
+        // Atualiza localização
+        const ultima = data[data.length - 1];
+        document.getElementById("localizacao").textContent =
+            `Lat: ${ultima.latitude}, Long: ${ultima.longitude}`;
+
+        altitudeChart.update();
+        temperatureChart.update();
+        batteryChart.update();
     } catch (err) {
         console.error("Erro ao buscar telemetrias:", err);
     }
-};
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-    initCharts();
-    fetchTelemetries();
-    setInterval(fetchTelemetries, 5000);
-});
+document.addEventListener("DOMContentLoaded", fetchTelemetries);
