@@ -12,43 +12,40 @@
         <button id="btnTelemetrias">Telemetrias</button>
     </div>
 
-    <div class="content">
-        <!-- Seção de Comandos -->
-        <div id="comandosSection" class="section hidden">
-            <h2>Enviar Comando</h2>
-            <select id="commandDropdown">
-                <option value="CMD_START_MISSION">Iniciar Missão</option>
-                <option value="CMD_STOP_MISSION">Encerrar Missão</option>
-                <option value="CMD_REBOOT">Reiniciar Sistema</option>
-                <option value="CMD_DEPLOY_PAYLOAD">Ativar Payload</option>
-            </select>
-            <button onclick="enviarComando()">Enviar</button>
-            <p id="respostaComando"></p>
-        </div>
-
-        <!-- Seção de Telemetrias -->
-        <div id="telemetriasSection" class="section">
-            <div class="telemetry-visual-area">
-                <div class="charts-row">
-                    <div class="chart-box"><canvas id="altitudeChart"></canvas></div>
-                    <div class="chart-box"><canvas id="temperatureChart"></canvas></div>
-                    <div class="chart-box"><canvas id="batteryChart"></canvas></div>
-                </div>
-                <div class="indicators-container">
-                    <strong>Localização Atual</strong>
-                    <p id="localizacao">Carregando...</p>
-                </div>
-            </div>
-
-            <div class="telemetry-area">
-                <h2>Telemetrias em Tempo Real</h2>
-                <div id="telemetry-container">
-                    <p>Carregando dados...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+     <div class="content">
+         <!-- Seção de Comandos -->
+         <div id="comandosSection" class="section hidden">
+             <h2>Enviar Comando</h2>
+             <select id="commandDropdown">
+                 <option value="CMD_START_MISSION">Iniciar Missão</option>
+                 <option value="CMD_STOP_MISSION">Encerrar Missão</option>
+                 <option value="CMD_REBOOT">Reiniciar Sistema</option>
+                 <option value="CMD_DEPLOY_PAYLOAD">Ativar Payload</option>
+             </select>
+             <button onclick="enviarComando()">Enviar</button>
+             <p id="respostaComando"></p>
+         </div>
+         <!-- Seção de Telemetrias -->
+         <div id="telemetriasSection" class="section">
+             <div class="telemetry-visual-area">
+                 <div class="charts-row">
+                     <!-- Gráficos de Giroscópio e Acelerômetro -->
+                     <div class="chart-box"><canvas id="gyroChart"></canvas></div>
+                     <div class="chart-box"><canvas id="accelChart"></canvas></div>
+                 </div>
+                 <div class="indicators-container">
+                     <strong>Localização Atual</strong>
+                     <p id="localizacao">Carregando...</p>
+                 </div>
+             </div>
+             <div class="telemetry-area">
+                 <h2>Telemetrias em Tempo Real</h2>
+                 <div id="telemetry-container">
+                     <p>Carregando dados...</p>
+                 </div>
+             </div>
+         </div>
+     </div>
     <script src="script.js"></script>
 </body>
 </html>

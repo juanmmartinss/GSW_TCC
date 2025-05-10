@@ -36,5 +36,13 @@ def create_telemetry(data: Telemetry, session: Session = Depends(get_session)):
 def list_telemetries(session: Session = Depends(get_session)):
     return session.exec(select(Telemetry)).all()
 
+
+@app.get("/telemetries/latest")
+def latest_telemetry(session: Session = Depends(get_session)):
+    result = session.exec(select(Telemetry).order_by(Telemetry.id.desc())).first()
+    if result:
+        return result
+    raise HTTPException(status_code=404, detail="Nenhuma telemetria encontrada")
+
 # Servir frontend
 app.mount("/", StaticFiles(directory="app/static", html=True), name="static")

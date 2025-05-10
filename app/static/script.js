@@ -16,13 +16,14 @@ function enviarComando() {
     resposta.textContent = `Comando '${comando}' enviado com sucesso!`;
 }
 
-// Configuração dos gráficos
-let altitudeChart = new Chart(document.getElementById("altitudeChart"), {
+
+// Configuração dos gráficos para Giroscópio e Acelerômetro
+let gyroChart = new Chart(document.getElementById("gyroChart"), {
     type: "line",
     data: {
         labels: [],
         datasets: [{
-            label: "Altitude (m)",
+            label: "Giroscópio (rad/s)",
             data: [],
             backgroundColor: "rgba(33, 150, 243, 0.2)",
             borderColor: "rgba(33, 150, 243, 1)",
@@ -36,12 +37,12 @@ let altitudeChart = new Chart(document.getElementById("altitudeChart"), {
     }
 });
 
-let temperatureChart = new Chart(document.getElementById("temperatureChart"), {
+let accelChart = new Chart(document.getElementById("accelChart"), {
     type: "line",
     data: {
         labels: [],
         datasets: [{
-            label: "Temperatura (°C)",
+            label: "Acelerômetro (m/s²)",
             data: [],
             backgroundColor: "rgba(244, 67, 54, 0.2)",
             borderColor: "rgba(244, 67, 54, 1)",
@@ -52,25 +53,6 @@ let temperatureChart = new Chart(document.getElementById("temperatureChart"), {
         maintainAspectRatio: false,
         responsive: true,
         scales: { y: { beginAtZero: true }, x: { display: false } }
-    }
-});
-
-let batteryChart = new Chart(document.getElementById("batteryChart"), {
-    type: "bar",
-    data: {
-        labels: ["Bateria"],
-        datasets: [{
-            label: "Nível de Bateria (%)",
-            data: [100],
-            backgroundColor: ["rgba(76, 175, 80, 0.6)"]
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-            y: { beginAtZero: true, max: 100 }
-        }
     }
 });
 
@@ -87,43 +69,49 @@ async function fetchTelemetries() {
         }
 
         let html = "<ul>";
-        data.forEach(t => {
+        
+        // Inverter a ordem para adicionar a mais recente primeiro
+        data.reverse().forEach(t => {
             html += `<li>
                 <strong>${t.timestamp}</strong><br>
-                <b>Alt:</b> ${t.altitude}m | <b>Temp:</b> ${t.temperature}°C | <b>Press:</b> ${t.pressure} hPa<br>
+                <b>Temp:</b> ${t.temperature}°C | <b>Hum:</b> ${t.humidity}%<br>
+                <b>Giroscópio:</b> ${t.gyx}, ${t.gyy}, ${t.gyz} rad/s | 
+                <b>Acelerômetro:</b> ${t.acx}, ${t.acy}, ${t.acz} m/s²<br>
                 <b>Lat:</b> ${t.latitude}, <b>Long:</b> ${t.longitude} | <b>Bat:</b> ${t.battery}%
             </li>`;
 
-            // Atualiza os gráficos
+            // Atualiza os gráficos de giroscópio e acelerômetro
             const label = new Date(t.timestamp).toLocaleTimeString();
 
-            if (altitudeChart.data.labels.length >= 10) {
-                altitudeChart.data.labels.shift();
-                temperatureChart.data.labels.shift();
-                altitudeChart.data.datasets[0].data.shift();
-                temperatureChart.data.datasets[0].data.shift();
+            if (gyroChart.data.labels.length >= 10) {
+                gyroChart.data.labels.shift();
+                accelChart.data.labels.shift();
+                gyroChart.data.datasets[0].data.shift();
+                accelChart.data.datasets[0].data.shift();
             }
 
-            altitudeChart.data.labels.push(label);
-            temperatureChart.data.labels.push(label);
-            altitudeChart.data.datasets[0].data.push(t.altitude);
-            temperatureChart.data.datasets[0].data.push(t.temperature);
-            batteryChart.data.datasets[0].data = [t.battery];
+            gyroChart.data.labels.push(label);
+            accelChart.data.labels.push(label);
+            gyroChart.data.datasets[0].data.push(t.gyx); // Usando diretamente os valores de giroscópio
+            accelChart.data.datasets[0].data.push(t.acx); // Usando diretamente os valores de acelerômetro
         });
+
         html += "</ul>";
         container.innerHTML = html;
 
         // Atualiza localização
-        const ultima = data[data.length - 1];
+        const ultima = data[0]; // A telemetria mais recente é a primeira
         document.getElementById("localizacao").textContent =
             `Lat: ${ultima.latitude}, Long: ${ultima.longitude}`;
 
-        altitudeChart.update();
-        temperatureChart.update();
-        batteryChart.update();
+        gyroChart.update();
+        accelChart.update();
     } catch (err) {
         console.error("Erro ao buscar telemetrias:", err);
     }
 }
+// Chama a função para atualizar as telemetrias a cada 5 segundos (5000 ms)
+setInterval(fetchTelemetries, 2000);
 
 document.addEventListener("DOMContentLoaded", fetchTelemetries);
+
