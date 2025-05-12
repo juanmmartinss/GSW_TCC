@@ -13,11 +13,11 @@ class Telemetry(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     mission_id: int
     timestamp: datetime
-    acx: int  # Acelerômetro no eixo X
-    acy: int  # Acelerômetro no eixo Y
-    acz: int  # Acelerômetro no eixo Z
-    gyx: int  # Giroscópio no eixo X
-    gyy: int  # Giroscópio no eixo Y
-    gyz: int  # Giroscópio no eixo Z
+    acx: float  # Acelerômetro no eixo X
+    acy: float  # Acelerômetro no eixo Y
+    acz: float  # Acelerômetro no eixo Z
+    gyx: float  # Giroscópio no eixo X
+    gyy: float  # Giroscópio no eixo Y
+    gyz: float  # Giroscópio no eixo Z
     temperature: float  # Temperatura
     humidity: float     # Umidade

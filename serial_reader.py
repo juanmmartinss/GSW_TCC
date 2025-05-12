@@ -10,9 +10,13 @@ URL_API = "http://localhost:8000/telemetries"
 ser = serial.Serial(PORTA_SERIAL, BAUD_RATE, timeout=1)
 print("Lendo dados da serial...")
 
-# Função para limpar valores e converter em int
-def safe_int(value):
-    return int(value.strip().strip('"'))
+def safe_float(value):
+    # Remove aspas, espaços e sufixos como 'g' ou 'dps'
+    value = value.strip().strip('"').replace('g', '').replace('dps', '')
+    try:
+        return float(value)
+    except ValueError:
+        return None
 
 def parse_telemetry(data):
     # "Temp: 30.50C, Hum: 58.00% | AcX: 420 AcY: -160 AcZ: 17744 | GyX: -23 GyY: -308 GyZ: 149"
@@ -21,16 +25,15 @@ def parse_telemetry(data):
         raise ValueError("Pacote incompleto ou mal formatado")
 
     # Extrair dados do acelerômetro
-    acx = safe_int(parts[1].split("AcX:")[1].split()[0])
-    acy = safe_int(parts[1].split("AcY:")[1].split()[0])
-    acz = safe_int(parts[1].split("AcZ:")[1].split()[0])
+    acx = safe_float(parts[1].split("AcX:")[1].split()[0].replace("g", ""))
+    acy = safe_float(parts[1].split("AcY:")[1].split()[0].replace("g", ""))
+    acz = safe_float(parts[1].split("AcZ:")[1].split()[0].replace("g", ""))
     
     # Extrair dados do giroscópio
-    gyx = safe_int(parts[2].split("GyX:")[1].split()[0])
-    gyy = safe_int(parts[2].split("GyY:")[1].split()[0])
-    gyz = safe_int(parts[2].split("GyZ:")[1].split()[0])
+    gyx = safe_float(parts[2].split("GyX:")[1].split()[0].replace("dps", ""))
+    gyy = safe_float(parts[2].split("GyY:")[1].split()[0].replace("dps", ""))
+    gyz = safe_float(parts[2].split("GyZ:")[1].split()[0].replace("dps", ""))    # Extrair dados de temperatura e umidade
     
-    # Extrair dados de temperatura e umidade
     temperature = float(parts[0].split("Temp:")[1].split("C")[0].strip())
     humidity = float(parts[0].split("Hum:")[1].split("%")[0].strip())
     
