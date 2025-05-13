@@ -9,12 +9,34 @@ document.getElementById("btnTelemetrias").addEventListener("click", () => {
     document.getElementById("comandosSection").classList.add("hidden");
 });
 
-// Simular envio de comando
+// Envia o comando "open" via POST para o backend
 function enviarComando() {
-    const comando = document.getElementById("commandDropdown").value;
-    const resposta = document.getElementById("respostaComando");
-    resposta.textContent = `Comando '${comando}' enviado com sucesso!`;
+    fetch("http://localhost:8000/send_command", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({}) // O comando é fixo no backend
+    })
+    .then(async response => {
+        const resposta = document.getElementById("respostaComando");
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            resposta.textContent = `❌ Erro: ${errorData.detail}`;
+            return;
+        }
+
+        const data = await response.json();
+        resposta.textContent = `✅ ${data.message}`;
+    })
+    .catch(error => {
+        const resposta = document.getElementById("respostaComando");
+        resposta.textContent = "❌ Erro ao enviar comando.";
+        console.error("Erro:", error);
+    });
 }
+
 
 // Configuração dos gráficos para Giroscópio e Acelerômetro
 let gyroChart = new Chart(document.getElementById("gyroChart"), {

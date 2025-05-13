@@ -5,7 +5,7 @@
     <title>Painel de Monitoramento</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script> <!-- Adiciona o Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -16,14 +16,8 @@
     <div class="content">
         <!-- Seção de Comandos -->
         <div id="comandosSection" class="section hidden">
-            <h2>Enviar Comando</h2>
-            <select id="commandDropdown">
-                <option value="CMD_START_MISSION">Iniciar Missão</option>
-                <option value="CMD_STOP_MISSION">Encerrar Missão</option>
-                <option value="CMD_REBOOT">Reiniciar Sistema</option>
-                <option value="CMD_DEPLOY_PAYLOAD">Ativar Payload</option>
-            </select>
-            <button onclick="enviarComando()">Enviar</button>
+            <h2>Comando: Abrir Paraquedas</h2>
+            <button onclick="enviarComando()">Abrir Paraquedas</button>
             <p id="respostaComando"></p>
         </div>
 
@@ -40,6 +34,7 @@
                     <p id="localizacao">Carregando...</p>
                 </div>
             </div>
+
             <div class="telemetry-area">
                 <h2>Telemetrias em Tempo Real</h2>
                 <div id="telemetry-container">
@@ -49,7 +44,7 @@
         </div>
 
         <!-- Área do CanSat 3D -->
-        <div id="canSat3D" style="width: 400px; height: 400px;"></div> <!-- Novo div para o CanSat 3D -->
+        <div id="canSat3D" style="width: 400px; height: 400px;"></div>
     </div>
 
     <script src="script.js"></script>

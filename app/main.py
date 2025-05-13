@@ -1,12 +1,16 @@
 from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 from .database import engine, init_db
 from .models import Telemetry
 from fastapi import HTTPException
+import serial
 from .models import Mission
 
 app = FastAPI()
+
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
 # Iniciar o banco de dados
 @app.on_event("startup")
@@ -18,12 +22,18 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-@app.post("/commands")
-def send_command(command: str, session: Session = Depends(get_session)):
-    if command not in ["STOP_TEMPERATURE", "START_TEMPERATURE"]:
-        raise HTTPException(status_code=400, detail="Comando inválido")
-
-    return {"status": "success", "command": command}
+@app.post("/send_command")
+async def send_command():
+    try:
+        command = "open"
+        ser.write(f"{command}\n".encode())
+        return JSONResponse(content={
+            "status": "success",
+            "command": command,
+            "message": f"Comando '{command}' enviado para a porta serial."
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/telemetries")
 def create_telemetry(data: Telemetry, session: Session = Depends(get_session)):

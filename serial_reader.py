@@ -55,9 +55,16 @@ while True:
         linha = ser.readline().decode("utf-8").strip()
         if linha:
             print("Recebido:", linha)
-            telemetry_data = parse_telemetry(linha)
-            r = requests.post(URL_API, json=telemetry_data)
-            print("Enviado:", r.status_code)
+
+            # Verifica se a linha contém os dados de telemetria
+            if "Temp:" in linha and "Hum:" in linha and "AcX:" in linha and "GyX:" in linha and "|" in linha:
+                try:
+                    telemetry_data = parse_telemetry(linha)
+                    r = requests.post(URL_API, json=telemetry_data)
+                    print("Enviado:", r.status_code)
+                except Exception as e:
+                    print("Erro ao processar pacote de telemetria:", e)
+               
     except Exception as e:
         print("Erro:", e)
 
