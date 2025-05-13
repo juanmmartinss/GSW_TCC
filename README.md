@@ -1,4 +1,4 @@
-# 🛰️ Ground Station Software (GSS) – CanSat Project
+# 🛰️ Ground Software (GSW) – CanSat Project
 
 This repository contains the **Backend** and **Frontend** applications for the Ground Station of the **CanSat** project, developed using **FastAPI**, **PostgreSQL**, and **JavaScript**. Communication with the satellite is handled via **serial port** using the **LoRa** module.
 
