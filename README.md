@@ -18,5 +18,5 @@ Make sure you have Docker and Docker Compose installed. To start the system, run
 
 ```bash
 docker-compose up --build
-
+```
 Access: http://localhost:8000/
