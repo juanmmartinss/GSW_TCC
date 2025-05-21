@@ -1,0 +1,80 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/juan/Workspace/GSW_TCC/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+#telemetry-container li	app/static/style.css	/^#telemetry-container li {$/;"	s
+#telemetry-container ul	app/static/style.css	/^#telemetry-container ul {$/;"	s
+.chart-box	app/static/style.css	/^.chart-box {$/;"	c
+.charts-row	app/static/style.css	/^.charts-row {$/;"	c
+.content	app/static/style.css	/^.content {$/;"	c
+.header	app/static/style.css	/^.header {$/;"	c
+.header button	app/static/style.css	/^.header button {$/;"	s
+.header button:hover	app/static/style.css	/^.header button:hover {$/;"	s
+.hidden	app/static/style.css	/^.hidden {$/;"	c
+.indicators-container	app/static/style.css	/^.indicators-container {$/;"	c
+.section	app/static/style.css	/^.section {$/;"	c
+.telemetry-area	app/static/style.css	/^.telemetry-area {$/;"	c
+.telemetry-visual-area	app/static/style.css	/^.telemetry-visual-area {$/;"	c
+BASE_URL	simulator.py	/^BASE_URL = "http:\/\/localhost:8000"$/;"	v
+BAUD_RATE	serial_reader.py	/^BAUD_RATE = 115200$/;"	v
+Comando: Abrir Paraquedas	app/static/index.html	/^            <h2>Comando: Abrir Paraquedas<\/h2>$/;"	i
+DATABASE_URL	app/database.py	/^DATABASE_URL = "postgresql:\/\/admin:secret@db:5432\/telemetry"$/;"	v
+GSW_TCC	README.md	/^# GSW_TCC$/;"	c
+Mission	app/models.py	/^class Mission(SQLModel, table=True):$/;"	c
+PORTA_SERIAL	serial_reader.py	/^PORTA_SERIAL = "\/dev\/ttyUSB1"  # Ajuste a porta conforme necessário$/;"	v
+Telemetrias em Tempo Real	app/static/index.html	/^                <h2>Telemetrias em Tempo Real<\/h2>$/;"	i
+Telemetry	app/models.py	/^class Telemetry(SQLModel, table=True):$/;"	c
+URL_API	serial_reader.py	/^URL_API = "http:\/\/localhost:8000\/telemetries"$/;"	v
+accelChart	app/static/index.html	/^                    <div class="chart-box"><canvas id="accelChart"><\/canvas><\/div>$/;"	I
+accelChart	app/static/script.js	/^let accelChart = new Chart(document.getElementById("accelChart"), {$/;"	v
+animate	app/static/script.js	/^function animate() {$/;"	f
+app	app/main.py	/^app = FastAPI()$/;"	v
+body	app/static/style.css	/^body {$/;"	s
+btnComandos	app/static/index.html	/^        <button id="btnComandos">Comandos<\/button>$/;"	I
+btnTelemetrias	app/static/index.html	/^        <button id="btnTelemetrias">Telemetrias<\/button>$/;"	I
+camera	app/static/script.js	/^let scene, camera, renderer, cylinder;$/;"	v
+canSat3D	app/static/index.html	/^        <div id="canSat3D" style="width: 400px; height: 400px;"><\/div>$/;"	I
+comandosSection	app/static/index.html	/^        <div id="comandosSection" class="section hidden">$/;"	I
+create_telemetry	app/main.py	/^def create_telemetry(data: Telemetry, session: Session = Depends(get_session)):$/;"	f
+created_at	app/models.py	/^    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)$/;"	v	class:Mission	typeref:typename:datetime
+cylinder	app/static/script.js	/^let scene, camera, renderer, cylinder;$/;"	v
+description	app/models.py	/^    description: str = Field(nullable=False)$/;"	v	class:Mission	typeref:typename:str
+engine	app/database.py	/^engine = create_engine(DATABASE_URL)$/;"	v
+enviarComando	app/static/script.js	/^function enviarComando() {$/;"	f
+fetchTelemetries	app/static/script.js	/^async function fetchTelemetries() {$/;"	f
+get_session	app/main.py	/^def get_session():$/;"	f
+get_telemetry	app/api/v1/telemetry.py	/^def get_telemetry():$/;"	f
+gyroChart	app/static/index.html	/^                    <div class="chart-box"><canvas id="gyroChart"><\/canvas><\/div>$/;"	I
+gyroChart	app/static/script.js	/^let gyroChart = new Chart(document.getElementById("gyroChart"), {$/;"	v
+id	app/models.py	/^    id: Optional[int] = Field(default=None, primary_key=True)$/;"	v	class:Mission	typeref:typename:Optional[int]
+id	app/models.py	/^    id: Optional[int] = Field(default=None, primary_key=True)$/;"	v	class:Telemetry	typeref:typename:Optional[int]
+init3D	app/static/script.js	/^function init3D() {$/;"	f
+init_db	app/database.py	/^def init_db():$/;"	f
+latest_telemetry	app/main.py	/^def latest_telemetry(session: Session = Depends(get_session)):$/;"	f
+list_telemetries	app/main.py	/^def list_telemetries(session: Session = Depends(get_session)):$/;"	f
+listen_for_commands	simulator.py	/^def listen_for_commands():$/;"	f
+localizacao	app/static/index.html	/^                    <p id="localizacao">Carregando...<\/p>$/;"	I
+name	app/models.py	/^    name: str = Field(index=True, nullable=False)$/;"	v	class:Mission	typeref:typename:str
+on_startup	app/main.py	/^def on_startup():$/;"	f
+parse_telemetry	serial_reader.py	/^def parse_telemetry(data):$/;"	f
+r	serial_reader.py	/^                    r = requests.post(URL_API, json=telemetry_data)$/;"	v
+renderer	app/static/script.js	/^let scene, camera, renderer, cylinder;$/;"	v
+respostaComando	app/static/index.html	/^            <p id="respostaComando"><\/p>$/;"	I
+router	app/api/v1/telemetry.py	/^router = APIRouter()$/;"	v
+safe_float	serial_reader.py	/^def safe_float(value):$/;"	f
+scene	app/static/script.js	/^let scene, camera, renderer, cylinder;$/;"	v
+send_command	app/main.py	/^async def send_command():$/;"	f
+send_telemetry	simulator.py	/^def send_telemetry():$/;"	f
+ser	app/main.py	/^ser = serial.Serial('\/dev\/ttyUSB1', 115200, timeout=1)$/;"	v
+ser	serial_reader.py	/^ser = serial.Serial(PORTA_SERIAL, BAUD_RATE, timeout=1)$/;"	v
+telemetriasSection	app/static/index.html	/^        <div id="telemetriasSection" class="section">$/;"	I
+telemetry-container	app/static/index.html	/^                <div id="telemetry-container">$/;"	I
+updateCylinderOrientation	app/static/script.js	/^function updateCylinderOrientation(yaw, pitch, roll) {$/;"	f
+updated_at	app/models.py	/^    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)$/;"	v	class:Mission	typeref:typename:datetime

@@ -21,3 +21,5 @@ class Telemetry(SQLModel, table=True):
     gyz: float  # Giroscópio no eixo Z
     temperature: float  # Temperatura
     humidity: float     # Umidade
+    pressure: float     # Pressão
+    altitude: float     # Altitude
