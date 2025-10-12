@@ -48,18 +48,24 @@ body {
     justify-content: space-between;
 }
 
+/* --- MUDANÇAS AQUI --- */
 .charts-row {
     display: flex;
     gap: 20px;
     height: 70%;
+    overflow-x: auto; /* Adiciona a barra de rolagem horizontal quando necessário */
+    padding-bottom: 15px; /* Espaço para a barra de rolagem não ficar colada */
 }
 
 .chart-box {
-    flex: 1;
+    flex: 0 0 48%; /* Impede que os gráficos encolham e define um tamanho base */
+    min-width: 400px; /* Garante uma largura mínima para cada gráfico */
     background-color: white;
     border-radius: 10px;
     padding: 10px;
 }
+/* --- FIM DAS MUDANÇAS --- */
+
 
 .indicators-container {
     margin-top: 10px;

@@ -23,3 +23,4 @@ class Telemetry(SQLModel, table=True):
     humidity: float     # Umidade
     pressure: float     # Pressão
     altitude: float     # Altitude
+    dir: str            # Direção (Ex: NO, S, L)

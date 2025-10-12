@@ -14,20 +14,18 @@
     </div>
 
     <div class="content">
-        <!-- Seção de Comandos -->
         <div id="comandosSection" class="section hidden">
             <h2>Comando: Abrir Paraquedas</h2>
             <button onclick="enviarComando()">Abrir Paraquedas</button>
             <p id="respostaComando"></p>
         </div>
 
-        <!-- Seção de Telemetrias -->
         <div id="telemetriasSection" class="section">
             <div class="telemetry-visual-area">
                 <div class="charts-row">
-                    <!-- Gráficos de Giroscópio e Acelerômetro -->
-                    <div class="chart-box"><canvas id="gyroChart"></canvas></div>
-                    <div class="chart-box"><canvas id="accelChart"></canvas></div>
+                    <div class="chart-box"><canvas id="altitudeChart"></canvas></div>
+                    <div class="chart-box"><canvas id="temperatureChart"></canvas></div>
+                    <div class="chart-box"><canvas id="pressureChart"></canvas></div>
                 </div>
                 <div class="indicators-container">
                     <strong>Localização Atual</strong>
@@ -47,4 +45,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
