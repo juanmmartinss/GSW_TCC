@@ -15,20 +15,16 @@ document.getElementById("btnTelemetrias").addEventListener("click", () => {
 function enviarComando() {
     fetch("http://localhost:8000/send_command", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({})
     })
     .then(async response => {
         const resposta = document.getElementById("respostaComando");
-
         if (!response.ok) {
             const errorData = await response.json();
             resposta.textContent = `❌ Erro: ${errorData.detail}`;
             return;
         }
-
         const data = await response.json();
         resposta.textContent = `✅ ${data.message}`;
     })
@@ -41,71 +37,15 @@ function enviarComando() {
 
 // Configuração geral dos gráficos
 const chartOptions = {
-    maintainAspectRatio: false,
-    responsive: true,
-    scales: { 
-        y: { beginAtZero: false },
-        x: { display: true, ticks: { maxRotation: 0, minRotation: 0 } } 
-    },
-    animation: {
-        duration: 300
-    }
+    maintainAspectRatio: false, responsive: true,
+    scales: { y: { beginAtZero: false }, x: { display: true, ticks: { maxRotation: 0, minRotation: 0 } } },
+    animation: { duration: 300 }
 };
 
-// --- GRÁFICOS ATUALIZADOS ---
-
-// 1. Gráfico de Altitude (continua igual)
-let altitudeChart = new Chart(document.getElementById("altitudeChart"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Altitude (m)",
-            data: [],
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            fill: true,
-            tension: 0.3
-        }]
-    },
-    options: chartOptions
-});
-
-// 2. Novo Gráfico de Temperatura
-let temperatureChart = new Chart(document.getElementById("temperatureChart"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Temperatura (°C)",
-            data: [],
-            backgroundColor: "rgba(255, 159, 64, 0.2)", // Laranja
-            borderColor: "rgba(255, 159, 64, 1)",
-            fill: true,
-            tension: 0.3
-        }]
-    },
-    options: chartOptions
-});
-
-// 3. Novo Gráfico de Pressão
-let pressureChart = new Chart(document.getElementById("pressureChart"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Pressão (hPa)",
-            data: [],
-            backgroundColor: "rgba(153, 102, 255, 0.2)", // Roxo
-            borderColor: "rgba(153, 102, 255, 1)",
-            fill: true,
-            tension: 0.3
-        }]
-    },
-    options: chartOptions
-});
-
-// --- FIM DA ATUALIZAÇÃO DOS GRÁFICOS ---
+// Gráficos
+let altitudeChart = new Chart(document.getElementById("altitudeChart"), { type: "line", data: { labels: [], datasets: [{ label: "Altitude (m)", data: [], backgroundColor: "rgba(75, 192, 192, 0.2)", borderColor: "rgba(75, 192, 192, 1)", fill: true, tension: 0.3 }] }, options: chartOptions });
+let temperatureChart = new Chart(document.getElementById("temperatureChart"), { type: "line", data: { labels: [], datasets: [{ label: "Temperatura (°C)", data: [], backgroundColor: "rgba(255, 159, 64, 0.2)", borderColor: "rgba(255, 159, 64, 1)", fill: true, tension: 0.3 }] }, options: chartOptions });
+let pressureChart = new Chart(document.getElementById("pressureChart"), { type: "line", data: { labels: [], datasets: [{ label: "Pressão (hPa)", data: [], backgroundColor: "rgba(153, 102, 255, 0.2)", borderColor: "rgba(153, 102, 255, 1)", fill: true, tension: 0.3 }] }, options: chartOptions });
 
 
 // Busca e atualiza telemetrias
@@ -121,7 +61,9 @@ async function fetchTelemetries() {
         }
 
         data.reverse();
+        const latestTelemetry = data[0];
 
+        // 1. Atualiza lista de telemetrias em texto
         let html = "<ul>";
         data.forEach(t => {
             html += `<li>
@@ -134,35 +76,33 @@ async function fetchTelemetries() {
         });
         html += "</ul>";
         container.innerHTML = html;
-
-        const latestTelemetry = data[0];
         
-        // Lógica de atualização para TODOS os gráficos
+        // 2. Lógica de atualização para TODOS os gráficos
         const MAX_DATA_POINTS = 10;
         const allCharts = [altitudeChart, temperatureChart, pressureChart];
-
         if (allCharts[0].data.labels.length >= MAX_DATA_POINTS) {
             allCharts.forEach(chart => {
                 chart.data.labels.shift();
                 chart.data.datasets[0].data.shift();
             });
         }
-
         const label = new Date(latestTelemetry.timestamp).toLocaleTimeString('pt-BR');
-        
-        // Adiciona os novos dados a cada gráfico
-        altitudeChart.data.labels.push(label); // Apenas um gráfico precisa adicionar o label
-        temperatureChart.data.labels.push(label);
-        pressureChart.data.labels.push(label);
-
+        allCharts.forEach(chart => chart.data.labels.push(label));
         altitudeChart.data.datasets[0].data.push(latestTelemetry.altitude);
         temperatureChart.data.datasets[0].data.push(latestTelemetry.temperature);
         pressureChart.data.datasets[0].data.push(latestTelemetry.pressure);
-        
-        // Atualiza todos os gráficos
         allCharts.forEach(chart => chart.update());
 
-        document.getElementById("localizacao").textContent = "Dados de GPS não disponíveis";
+        // --- LÓGICA DE ATUALIZAÇÃO DO GPS CORRIGIDA ---
+        const localizacaoP = document.getElementById("localizacao");
+        // Verifica se os campos latitude e longitude existem e não são nulos
+        if (latestTelemetry.latitude && latestTelemetry.longitude) {
+            // Exibe os dados formatados com 6 casas decimais
+            localizacaoP.textContent = `Lat: ${latestTelemetry.latitude.toFixed(6)}, Long: ${latestTelemetry.longitude.toFixed(6)}`;
+        } else {
+            // Caso não existam, exibe uma mensagem de espera
+            localizacaoP.textContent = "Aguardando sinal GPS...";
+        }
 
     } catch (err) {
         console.error("Erro ao buscar telemetrias:", err);
