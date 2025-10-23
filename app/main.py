@@ -1,12 +1,14 @@
 from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse # 1. ADICIONAR StreamingResponse
 from sqlmodel import Session, select
 from .database import engine, init_db
 from .models import Telemetry
 from fastapi import HTTPException
 import serial
 from .models import Mission
+import io
+import csv
 
 app = FastAPI()
 
@@ -54,5 +56,33 @@ def latest_telemetry(session: Session = Depends(get_session)):
         return result
     raise HTTPException(status_code=404, detail="Nenhuma telemetria encontrada")
 
-# Servir frontend
+
+@app.get("/telemetries/csv")
+def download_telemetries_csv(session: Session = Depends(get_session)):
+    """
+    Endpoint para baixar todos os dados de telemetria em formato CSV.
+    """
+
+    stream = io.StringIO()
+
+    writer = csv.writer(stream)
+
+    headers = list(Telemetry.__fields__.keys())
+    writer.writerow(headers)
+
+    telemetries = session.exec(select(Telemetry)).all()
+
+    for telemetry in telemetries:
+        row = [getattr(telemetry, header) for header in headers]
+        writer.writerow(row)
+
+    response = StreamingResponse(
+        iter([stream.getvalue()]),
+        media_type="text/csv"
+    )
+
+    response.headers["Content-Disposition"] = "attachment; filename=telemetria_export.csv"
+
+    return response
+
 app.mount("/", StaticFiles(directory="app/static", html=True), name="static")
