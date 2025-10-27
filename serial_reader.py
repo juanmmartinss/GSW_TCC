@@ -2,6 +2,7 @@ import serial
 import requests
 import json
 import re
+import time
 from datetime import datetime
 
 PORTA_SERIAL = "/dev/ttyUSB0"  # Ajuste a porta conforme necessário
@@ -21,7 +22,7 @@ def safe_float(value):
 def parse_telemetry(data):
     # Formato esperado: "Temp:... | AcX:... | GyX:... | P:... | Dir:... | Lat:... Lng:..."
     parts = data.split("|")
-    if len(parts) < 6: # Agora esperamos 6 partes
+    if len(parts) < 7:
         raise ValueError(f"Pacote incompleto ou mal formatado. Recebido: {data}")
 
     # Extrações existentes (sem alteração)
@@ -37,8 +38,10 @@ def parse_telemetry(data):
     altitude = safe_float(parts[3].split("A:")[1].split()[0])
     direction = parts[4].split("Dir:")[1].strip()
 
+    battery = safe_float(parts[5].split("Bat:")[1])
+
     # --- LÓGICA ADICIONADA PARA O GPS ---
-    gps_part = parts[5].strip()  # "Lat:-22.781884 Lng:-47.595141"
+    gps_part = parts[6].strip()  # "Lat:-22.781884 Lng:-47.595141"
     latitude = None
     longitude = None
     if "Lat:" in gps_part and "Lng:" in gps_part:
@@ -60,34 +63,39 @@ def parse_telemetry(data):
         "pressure": pressure,
         "altitude": altitude,
         "dir": direction,
-        "latitude": latitude,    # Dado novo
-        "longitude": longitude   # Dado novo
+        "latitude": latitude,
+        "longitude": longitude,
+        "battery_voltage": battery
     }
-
-def extract_telemetry_line(raw_line):
-    match = re.search(r'"([^"]+)"', raw_line)
-    if match:
-        return match.group(1)
-    return None
 
 while True:
     try:
         linha = ser.readline().decode("utf-8", errors="ignore").strip()
         if linha:
             print("Recebido:", linha)
-            telemetry_line = extract_telemetry_line(linha)
-            if telemetry_line:
-                # Checa se os campos essenciais existem, incluindo Lat e Lng
-                if all(k in telemetry_line for k in ["Temp:", "Dir:", "Lat:", "Lng:"]):
+
+            # Procura pelo formato: Cnt:123 | Pkt:"payload"
+            match = re.search(r'Cnt:(\d+) \| Pkt:"([^"]+)"', linha)
+
+            if match:
+                packet_count = int(match.group(1)) # Pega o número do contador
+                telemetry_line = match.group(2)    # Pega o payload de dentro das aspas
+
+                # Checa se os campos essenciais existem no payload
+                if all(k in telemetry_line for k in ["Temp:", "Dir:", "Bat:", "Lat:"]):
                     try:
                         telemetry_data = parse_telemetry(telemetry_line)
+                        # Adiciona o contador ao dict antes de enviar
+                        telemetry_data["packet_count"] = packet_count 
+
                         r = requests.post(URL_API, json=telemetry_data)
-                        print(f"Enviado para API. Status: {r.status_code}")
+                        print(f"Enviado para API. Status: {r.status_code}, Pkt: {packet_count}")
+                        time.sleep(0.1) # Pausa por 100 milissegundos
                     except Exception as e:
                         print(f"Erro ao processar pacote de telemetria: {e}")
                 else:
                     print("Linha ignorada: Faltam campos essenciais na telemetria.")
             else:
-                print("Linha ignorada: sem dados de telemetria entre aspas.")
+                print("Linha ignorada: Formato Cnt/Pkt não reconhecido.")
     except Exception as e:
         print(f"Erro geral no loop: {e}")

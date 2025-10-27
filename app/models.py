@@ -26,3 +26,5 @@ class Telemetry(SQLModel, table=True):
     dir: str
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    battery_voltage: Optional[float] = None
+    packet_count: Optional[int] = None
